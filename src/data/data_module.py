@@ -3,10 +3,11 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 import pandas as pd
-from pprint import pformat
+
 from utils.file_access import FileAccess
 from config.state_init import StateManager
 from typing import List, Dict, Callable, Optional, Union, Any
+
 
 class DataModule:
     """
@@ -74,14 +75,9 @@ class DataModule:
 
 def load_dataset(dm: DataModule) -> pd.DataFrame:
     if not hasattr(dm, "_loaded_data"):
-        # try:
         dm._loaded_data = dm.load()
-        # logging.debug(f"Loaded dataset from {dm.data_path} with shape {dm._loaded_data.shape}")
         logging.debug(f"Loaded dataset from {dm.data_path}")
         
         if dm._loaded_data is None:
             raise ValueError(f"Dataset at {dm.data_path} is empty.")
-        # except FileNotFoundError as e:
-        #     logging.error(f"File not found for {dm.data_path}: {e}")
-        #     raise
     return dm._loaded_data

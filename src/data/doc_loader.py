@@ -15,7 +15,6 @@ class DocumentLoader:
     ):
         self.state = state
         self.config = state.data_config
-        self.dd = NoDataDict()
 
     def run(self):
         self.all_docs = []

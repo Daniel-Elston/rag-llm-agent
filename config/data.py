@@ -4,17 +4,14 @@ import attr
 import logging
 from pprint import pformat
 
-# def default_labels():
-#     return ["cat", "dog", "go", "happy", "left", "no", "off", "on", "yes", "zero"]
-
 
 @attr.s
 class DataConfig:
-    chunk_size: int = attr.ib(default=1200)
+    overwrite: bool = attr.ib(default=True)
+    save_fig: bool = attr.ib(default=True)
+    chunk_size: int = attr.ib(default=1200)    
     chunk_overlap: int = attr.ib(default=100)
     separators: list = attr.ib(default=["\n\n", "\n", ".", ";", ",", " ", ""])
-    # overwrite: bool = attr.ib(default=True)
-    # save_fig: bool = attr.ib(default=True)
 
     def __attrs_post_init__(self):
         attr_dict = attr.asdict(self)
