@@ -33,7 +33,7 @@ class BuildVectorStore:
             chunked_docs,
             self.embeddings
         )
-        self._log_doc_embeddings(faiss_store, chunked_docs)
+        # self._log_doc_embeddings(faiss_store, chunked_docs)
         self.state.data_state.set("faiss_store", faiss_store)
     
     def _log_doc_embeddings(self, faiss_store, chunked_docs):

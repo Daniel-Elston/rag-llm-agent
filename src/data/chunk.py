@@ -29,7 +29,7 @@ class ChunkDocuments:
         documents = self.dm.load()
         chunks = self.text_splitter.split_documents(documents)
         chunks_filtered = [doc for doc in chunks if self.filter_junk_chunks(doc)]
-        self._log_doc_chunks(chunks_filtered)
+        # self._log_doc_chunks(chunks_filtered)
         self.state.data_state.set("chunk_docs_all", chunks_filtered)
         return chunks_filtered
 
@@ -42,8 +42,6 @@ class ChunkDocuments:
     def _log_doc_chunks(self, chunks_filtered):
         """Logs and saves specific chunks of documents to a file"""
         log_entries = []
-
-        # Collect log entries for specified indices
         for i in (0, 1, 2, 15, -1):
             if i < len(chunks_filtered):  # Avoid out-of-range errors
                 log_entries.append(
@@ -51,7 +49,6 @@ class ChunkDocuments:
                     f"Chunk:\n{chunks_filtered[i].page_content}\n\n"
                     f"{'=' * 125}\n"
                 )
-
         combined_log = "\n".join(log_entries)
         FileAccess.save_file(
                     combined_log, self.state.paths.get_path("sample-chunks"))
