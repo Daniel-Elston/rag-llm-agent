@@ -27,6 +27,8 @@ class FileAccess:
             return pd.read_excel(path)
         elif suffix == ".json":
             return pd.read_json(path)
+        elif suffix == ".pdf":
+            pass
         else:
             raise ValueError(f"Unknown file type: {suffix}")
 

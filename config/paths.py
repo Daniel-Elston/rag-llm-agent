@@ -8,11 +8,12 @@ from pprint import pformat
 
 
 paths_store = {
-    "raw": Path("data/raw/heart.csv"),
-    "sdo": Path("data/sdo/heart.parquet"),
-    
-    "load1_transform": Path("data/raw/heart1.csv"),
-    "load2_fetch": Path("data/raw/heart2.csv"),
+    "raw-p1": Path("data/raw/demonstrating-quantum-error-mitigation-on-logical-qubits-2501.09079v1.pdf"),
+    "raw-p2": Path("data/raw/modeling-entanglement-based-quantum-key-distribution-for-the-nasa-quantum-comms-analysis-suite-2501.08476v1.pdf"),
+    "raw-t1": Path("data/raw/test-d1.pdf"),
+    "raw-t2": Path("data/raw/test-m2.pdf"),
+    "raw-idx1": "2501.09079",
+    "raw-idx2": "2501.08476"
 }
 
 

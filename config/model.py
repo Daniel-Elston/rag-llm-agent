@@ -12,8 +12,9 @@ import attr
 
 @attr.s
 class ModelConfig:
+    pass
     # device: str = attr.ib(factory=get_device)
-    num_classes: int = attr.ib(default=10)
+    # num_classes: int = attr.ib(default=10)
 #     subset: bool = attr.ib(default=False)
 #     epochs: int = attr.ib(default=15)
 #     batch_size: int = attr.ib(default=32)

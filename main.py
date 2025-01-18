@@ -21,7 +21,6 @@ class MainPipeline:
         """ETL pipeline main entry point."""
         steps = [
             DataPipeline(self.state, self.exe),
-            DatabasePipeline(self.state, self.exe),
         ]
         self.exe._execute_steps(steps, stage="main")
 

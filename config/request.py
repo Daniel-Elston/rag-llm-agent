@@ -10,14 +10,7 @@ def default_labels():
 
 @attr.s
 class RequestConfig:
-    overwrite: bool = attr.ib(default=True)
-    save_fig: bool = attr.ib(default=True)
-    labels: list = attr.ib(factory=default_labels)
-    train_size: float = attr.ib(default=0.5)
-    subset: bool = attr.ib(default=True)
-    batch_size: int = attr.ib(default=32)
-    shuffle: bool = attr.ib(default=True)
-    num_workers: int = attr.ib(default=4)
+    pass
     
     def __attrs_post_init__(self):
         attr_dict = attr.asdict(self)
