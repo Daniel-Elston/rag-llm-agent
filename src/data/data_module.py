@@ -11,6 +11,7 @@ from typing import List, Dict, Callable, Optional, Union, Any
 
 class DataModule:
     """
+    Summary: Base class for loading data from a file or in-memory state.
     Args:
         state (StateManager): The state manager to access in-memory data.
         state_key (str): Key to retrieve data from in-memory state.

@@ -4,18 +4,16 @@ from config.state_init import StateManager
 from utils.execution import TaskExecutor
 
 from src.data.data_module import DataModule
-from src.data.process import ProcessDocuments
-from src.data.doc_loader import DocumentLoader
 from src.data.chunk import ChunkDocuments
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-class DataPipeline:
+class ChunkPipeline:
     """
-    Summary: Loads all raw documents and performs light NLP cleaning.\n
-        Input: Raw documents (local or arxiv) ``data_state key: raw_docs_all``\n
-        Output: Chunked documents ``data_state key: proc_docs_all``
+    Summary: Takes processed documents, performs chunking.\n
+        Input: Processed documents ``data_state key: proc_docs_all``\n
+        Output: Chunked documents ``data_state key: chunk_docs_all``
     """
     def __init__(
         self, state: StateManager,
@@ -25,9 +23,9 @@ class DataPipeline:
         self.exe = exe
         self.config = state.data_config
         
-        self.dm_raw_docs = DataModule(
+        self.dm_processed_docs = DataModule(
             state=self.state,
-            state_key="raw_docs_all",
+            state_key="proc_docs_all",
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -38,11 +36,11 @@ class DataPipeline:
 
 
     def __call__(self):
-        DocumentLoader(self.state).run(),
         steps = [
-            ProcessDocuments(
+            ChunkDocuments(
                 state = self.state,
-                dm = self.dm_raw_docs,
-            )
+                dm = self.dm_processed_docs,
+                text_splitter = self.text_splitter,
+            ),
         ]
         self.exe._execute_steps(steps, stage="parent")

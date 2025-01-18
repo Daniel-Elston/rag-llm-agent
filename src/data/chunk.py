@@ -10,11 +10,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 class ChunkDocuments:
     """
-    Summary: 
+    Summary: Splits documents into chunks, based on text splitter
     Brief:
-        - Standardise special characters if complex fonts
-        - Remove excessive whitespace
-        - Fix repeated punctuation (e.g. ". ." -> ".")
+        - Splits documents into chunks using text splitter and data config params
+        - Filters out chunks with mostly numerical data
     """
     def __init__(
         self, state: StateManager,

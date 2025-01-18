@@ -11,7 +11,9 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 class VectorStorePipeline:
     """
-    Takes chunked documents, performs embedding, and stores them in FAISS (in-memory).
+    Summary: Takes chunked documents, performs embedding, and stores them in FAISS (in-memory).\n
+        Input: Chunked documents ``data_state key: chunk_docs_all``\n
+        Output: Embedded documents stored in FAISS ``data_state key: faiss_store``
     """
     def __init__(
         self, state: StateManager,

@@ -4,6 +4,7 @@ import logging
 
 from config.state_init import StateManager
 from src.pipelines.data_pipeline import DataPipeline
+from src.pipelines.chunk_pipeline import ChunkPipeline
 from src.pipelines.vector_pipeline import VectorStorePipeline
 from utils.execution import TaskExecutor
 from utils.project_setup import init_project
@@ -21,6 +22,7 @@ class MainPipeline:
         """ETL pipeline main entry point."""
         steps = [
             DataPipeline(self.state, self.exe),
+            ChunkPipeline(self.state, self.exe),
             VectorStorePipeline(self.state, self.exe),
         ]
         self.exe._execute_steps(steps, stage="main")

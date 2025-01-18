@@ -6,10 +6,12 @@ from langchain_community.document_loaders import ArxivLoader
 from langchain_community.document_loaders import PyPDFLoader
 
 from config.state_init import StateManager
-from src.data.data_dict import NoDataDict
 
 
 class DocumentLoader:
+    """
+    Summary: Load all raw documents from local dir or arxiv
+    """
     def __init__(
         self, state: StateManager,
     ):
