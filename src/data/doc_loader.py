@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import logging
-
+from utils.file_access import FileAccess
 from langchain_community.document_loaders import ArxivLoader
 from langchain_community.document_loaders import PyPDFLoader
 
@@ -30,7 +29,7 @@ class DocumentLoader:
             pdf_path = self.state.paths.get_path(idx)
             loader = PyPDFLoader(pdf_path)
             self.all_docs.extend(loader.load())
-        # self._log_doc_metadata(self.all_docs)
+        self._log_doc_metadata(self.all_docs)
     
     def load_arxiv(self):
         arxiv_path_idx = ["raw-idx1", "raw-idx2"]
@@ -38,10 +37,14 @@ class DocumentLoader:
             arx_path = self.state.paths.get_path(idx)
             loader = ArxivLoader(query=str(arx_path))
             self.all_docs.extend(loader.load())
-        # self._log_doc_metadata(self.all_docs)
-
+        self._log_doc_metadata(self.all_docs)
+    
     def _log_doc_metadata(self, documents):
         for i, doc in enumerate(documents):
-            logging.debug(f"Document {i + 1}:")
-            logging.debug(f"Page Content (Sample):\n{doc.page_content[1000:1050]}")
-            logging.debug(f"Metadata:\n{doc.metadata}")
+            log_entry = (
+                f"Document {i + 1}:\n"
+                f"Metadata:\n{doc.metadata}\n"
+                f"Page Content (Sample):\n{doc.page_content[250:1000]}\n\n"
+            )
+            FileAccess.save_file(
+                log_entry, self.state.paths.get_path("raw-doc-metadata"))

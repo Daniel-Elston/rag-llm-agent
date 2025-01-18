@@ -8,12 +8,18 @@ from pprint import pformat
 
 
 paths_store = {
+    # Raw
     "raw-p1": Path("data/raw/demonstrating-quantum-error-mitigation-on-logical-qubits-2501.09079v1.pdf"),
     "raw-p2": Path("data/raw/modeling-entanglement-based-quantum-key-distribution-for-the-nasa-quantum-comms-analysis-suite-2501.08476v1.pdf"),
     "raw-t1": Path("data/raw/test-d1.pdf"),
     "raw-t2": Path("data/raw/test-m2.pdf"),
     "raw-idx1": "2501.09079",
-    "raw-idx2": "2501.08476"
+    "raw-idx2": "2501.08476",
+    
+    # Outputs
+    "raw-doc-metadata": Path("reports/outputs/raw-doc-metadata.txt"),
+    "sample-chunks": Path("reports/outputs/sample-chunks.txt"),
+    "embeddings_sample": Path("reports/outputs/embeddings_sample.txt"),
 }
 
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-from contextlib import contextmanager
 from pathlib import Path
 
 import pandas as pd
@@ -47,6 +46,9 @@ class FileAccess:
                 return df.to_json(path, orient="records", indent=4)
             elif isinstance(df, dict):
                 return FileAccess.save_json(df, path)
+        elif suffix == ".txt":
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(df)
         else:
             raise ValueError(f"Unknown file type: {path} {suffix}")
 

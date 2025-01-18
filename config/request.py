@@ -13,8 +13,9 @@ class RequestConfig:
     pass
     
     def __attrs_post_init__(self):
-        attr_dict = attr.asdict(self)
-        logging.debug(f"RequestConfig:\n{pformat(attr_dict)}\n")
+        # attr_dict = attr.asdict(self)
+        # logging.debug(f"RequestConfig:\n{pformat(attr_dict)}\n")
+        pass
 
 
 class RequestState:

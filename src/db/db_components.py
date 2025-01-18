@@ -16,7 +16,7 @@ class DatabaseConnection:
 
         self.engine, self.conn = self.create_my_engine()
         self.pool = self.create_my_pool()
-        self.log_database_info()
+        # self.log_database_info()
 
     def create_my_pool(self):
         """Initialize connection pool"""

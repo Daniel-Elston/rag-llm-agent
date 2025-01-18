@@ -53,8 +53,9 @@ class DatabaseConfig:
         return self.db_info["table"]
 
     def __attrs_post_init__(self):
-        attr_dict = attr.asdict(self)
+        # attr_dict = attr.asdict(self)
         # logging.debug(f"DatabaseConfig:\n{pformat(attr_dict)}\n")
+        pass
 
 
 @dataclass
