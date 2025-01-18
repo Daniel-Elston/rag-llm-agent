@@ -7,7 +7,7 @@ from config.state_init import StateManager
 from src.data.data_module import DataModule
 
 
-class ProcessText:
+class ProcessDocuments:
     """
     Summary: Light NLP cleaning for document text
     Brief:

@@ -4,13 +4,11 @@ from config.state_init import StateManager
 from utils.execution import TaskExecutor
 
 from src.data.data_module import DataModule
-from src.data.process import ProcessText
+from src.data.process import ProcessDocuments
 from src.data.doc_loader import DocumentLoader
-from src.data.chunk import ChunkText
+from src.data.chunk import ChunkDocuments
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import ArxivLoader
-from langchain_community.document_loaders import PyPDFLoader
 
 
 class DataPipeline:
@@ -45,11 +43,11 @@ class DataPipeline:
     def __call__(self):
         DocumentLoader(self.state).run(),
         steps = [
-            ProcessText(
+            ProcessDocuments(
                 state = self.state,
                 dm = self.dm_raw_docs,
             ),
-            ChunkText(
+            ChunkDocuments(
                 state = self.state,
                 dm = self.dm_processed_docs,
                 text_splitter = self.text_splitter,

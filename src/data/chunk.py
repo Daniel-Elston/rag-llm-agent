@@ -8,7 +8,7 @@ from src.data.data_module import DataModule
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-class ChunkText:
+class ChunkDocuments:
     """
     Summary: 
     Brief:
