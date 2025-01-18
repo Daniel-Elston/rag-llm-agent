@@ -20,6 +20,7 @@ paths_store = {
     "raw-doc-metadata": Path("reports/outputs/raw-doc-metadata.txt"),
     "sample-chunks": Path("reports/outputs/sample-chunks.txt"),
     "embeddings_sample": Path("reports/outputs/embeddings_sample.txt"),
+    "generated-answers": Path("reports/outputs/generated-answers.txt"),
 }
 
 

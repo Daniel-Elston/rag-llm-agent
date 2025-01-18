@@ -9,8 +9,8 @@ from pprint import pformat
 class DataConfig:
     overwrite: bool = attr.ib(default=True)
     save_fig: bool = attr.ib(default=True)
-    chunk_size: int = attr.ib(default=1200)    
-    chunk_overlap: int = attr.ib(default=100)
+    chunk_size: int = attr.ib(default=1000)    
+    chunk_overlap: int = attr.ib(default=50)
     separators: list = attr.ib(default=["\n\n", "\n", ".", ";", ",", " ", ""])
 
     def __attrs_post_init__(self):

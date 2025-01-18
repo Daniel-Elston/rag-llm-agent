@@ -26,11 +26,11 @@ class BuildVectorStore:
         self.state = state
         self.dm = dm
         self.embeddings = embeddings
+        self.chunked_docs = self.dm.load()
 
     def __call__(self):
-        chunked_docs = self.state.data_state.get("chunk_docs_all")
         faiss_store = FAISS.from_documents(
-            chunked_docs,
+            self.chunked_docs,
             self.embeddings
         )
         # self._log_doc_embeddings(faiss_store, chunked_docs)

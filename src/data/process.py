@@ -21,12 +21,12 @@ class ProcessDocuments:
     ):
         self.state = state
         self.dm = dm
+        self.documents = self.dm.load()
 
     def __call__(self):
-        documents = self.dm.load()
-        for doc in documents:
+        for doc in self.documents:
             doc.page_content = self.clean_document_text(doc.page_content)
-        self.state.data_state.set("proc_docs_all", documents)
+        self.state.data_state.set("proc_docs_all", self.documents)
 
     def clean_document_text(self, text: str) -> str:
         text = unicodedata.normalize('NFKC', text)

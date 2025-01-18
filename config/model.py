@@ -9,7 +9,11 @@ import attr
 @attr.s
 class ModelConfig:
     embedding_model_name: str = attr.ib(
-        default="sentence-transformers/all-MiniLM-L6-v2")
+        default="sentence-transformers/all-MiniLM-L6-v2"
+    )
+    language_model_name: str = attr.ib(
+        default="google/flan-t5-base"
+    )
 
     def __attrs_post_init__(self):
         attr_dict = attr.asdict(self)

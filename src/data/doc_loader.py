@@ -24,7 +24,8 @@ class DocumentLoader:
         self.state.data_state.set("raw_docs_all", self.all_docs)
 
     def load_pdfs(self):
-        pdf_path_idx = ["raw-t1", "raw-t2"]
+        # pdf_path_idx = ["raw-t1", "raw-t2"]
+        pdf_path_idx = ["raw-p1", "raw-p2"]
         for idx in pdf_path_idx:
             pdf_path = self.state.paths.get_path(idx)
             loader = PyPDFLoader(pdf_path)

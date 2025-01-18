@@ -23,11 +23,12 @@ class ChunkDocuments:
         self.state = state
         self.dm = dm
         self.text_splitter = text_splitter
+        self.documents = self.dm.load()
+        
 
 
     def __call__(self):
-        documents = self.dm.load()
-        chunks = self.text_splitter.split_documents(documents)
+        chunks = self.text_splitter.split_documents(self.documents)
         chunks_filtered = [doc for doc in chunks if self.filter_junk_chunks(doc)]
         # self._log_doc_chunks(chunks_filtered)
         self.state.data_state.set("chunk_docs_all", chunks_filtered)
