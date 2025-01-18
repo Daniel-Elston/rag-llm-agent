@@ -21,9 +21,9 @@ class MainPipeline:
     def run(self):
         """ETL pipeline main entry point."""
         steps = [
-            DataPipeline(self.state, self.exe),
-            ChunkPipeline(self.state, self.exe),
-            VectorStorePipeline(self.state, self.exe),
+            DataPipeline(self.state, self.exe).prepare_data,
+            ChunkPipeline(self.state, self.exe).chunk_data,
+            VectorStorePipeline(self.state, self.exe).build_vector_store,
         ]
         self.exe._execute_steps(steps, stage="main")
 

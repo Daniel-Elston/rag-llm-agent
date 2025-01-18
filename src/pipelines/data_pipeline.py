@@ -37,7 +37,7 @@ class DataPipeline:
         )
 
 
-    def __call__(self):
+    def prepare_data(self):
         DocumentLoader(self.state).run(),
         steps = [
             ProcessDocuments(

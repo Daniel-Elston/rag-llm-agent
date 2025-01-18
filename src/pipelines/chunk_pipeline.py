@@ -35,7 +35,7 @@ class ChunkPipeline:
         )
 
 
-    def __call__(self):
+    def chunk_data(self):
         steps = [
             ChunkDocuments(
                 state = self.state,

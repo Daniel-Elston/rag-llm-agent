@@ -33,7 +33,7 @@ class VectorStorePipeline:
         )
 
 
-    def __call__(self):
+    def build_vector_store(self):
         steps = [
             BuildVectorStore(
                 state = self.state,
