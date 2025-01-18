@@ -1,9 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
-from pprint import pprint
-import unicodedata
 
 from config.state_init import StateManager
 from src.data.data_module import DataModule
@@ -24,6 +21,7 @@ class ChunkText:
         dm: DataModule,
         text_splitter: RecursiveCharacterTextSplitter
     ):
+        self.state = state
         self.dm = dm
         self.text_splitter = text_splitter
 
@@ -32,9 +30,8 @@ class ChunkText:
         documents = self.dm.load()
         chunks = self.text_splitter.split_documents(documents)
         chunks_filtered = [doc for doc in chunks if self.filter_junk_chunks(doc)]
-        self.view(chunks_filtered)
-        # doc.page_content = "\n".join(chunks)
-        # print(chunks_filtered)
+        # self._log_doc_chunks(chunks_filtered)
+        self.state.data_state.set("chunk_docs_all", chunks_filtered)
         return chunks_filtered
 
     def filter_junk_chunks(self, doc):
@@ -43,7 +40,7 @@ class ChunkText:
         alpha_chars = sum(char.isalpha() for char in content)
         return alpha_chars >= len(content) // 2
     
-    def view(self, chunks_filtered):
+    def _log_doc_chunks(self, chunks_filtered):
         for i in (0, 1, 2, 15, -1):
             logging.debug(f"[Document {i} of {len(chunks_filtered)}]")
             logging.debug(chunks_filtered[i].page_content)

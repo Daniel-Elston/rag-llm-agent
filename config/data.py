@@ -23,11 +23,14 @@ class DataState:
 
     def set(self, key, value):
         """Store a value in the state"""
-        logging.debug(f"Setting {key} to memory")
+        logging.getLogger("file_access").file_track(
+            f"SAVING ``{key}`` to {self.__class__.__name__} in memory")
         self._state[key] = value
 
     def get(self, key):
         """Retrieve a value from the state"""
+        logging.getLogger("file_access").file_track(
+            f"LOADING ``{key}`` from {self.__class__.__name__} in memory")
         return self._state.get(key)
 
     def clear(self):

@@ -12,6 +12,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import ArxivLoader
 from langchain_community.document_loaders import PyPDFLoader
 
+
 class DataPipeline:
     def __init__(
         self, state: StateManager,
@@ -28,6 +29,10 @@ class DataPipeline:
         self.dm_processed_docs = DataModule(
             state=self.state,
             state_key="proc_docs_all",
+        )
+        self.dm_chunk_docs = DataModule(
+            state=self.state,
+            state_key="chunk_docs_all",
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
