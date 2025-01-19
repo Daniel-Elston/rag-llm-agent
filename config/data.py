@@ -7,6 +7,7 @@ from pprint import pformat
 
 @attr.s
 class DataConfig:
+    write_output: bool = attr.ib(default=False)
     overwrite: bool = attr.ib(default=True)
     save_fig: bool = attr.ib(default=True)
     chunk_size: int = attr.ib(default=1000)    

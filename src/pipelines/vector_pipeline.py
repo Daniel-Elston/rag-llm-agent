@@ -21,7 +21,8 @@ class VectorStorePipeline:
     ):
         self.state = state
         self.exe = exe
-        self.config = state.model_config
+        self.data_config = state.data_config
+        self.model_config = state.model_config
         
         self.dm_chunk_docs = DataModule(
             state=self.state,
@@ -29,7 +30,7 @@ class VectorStorePipeline:
         )
         
         self.embeddings = HuggingFaceEmbeddings(
-            model_name=self.config.embedding_model_name
+            model_name=self.model_config.embedding_model_name
         )
 
 
@@ -37,6 +38,7 @@ class VectorStorePipeline:
         steps = [
             BuildVectorStore(
                 state = self.state,
+                data_config = self.data_config,
                 dm = self.dm_chunk_docs,
                 embeddings = self.embeddings
             )

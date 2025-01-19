@@ -4,6 +4,8 @@ import logging
 
 from utils.file_access import FileAccess
 from config.state_init import StateManager
+from config.data import DataConfig
+from config.model import ModelConfig
 from src.data.data_module import DataModule
 
 
@@ -18,11 +20,14 @@ class RAGGenerator:
     """
     def __init__(
         self, state: StateManager,
+        data_config: DataConfig,
+        model_config: ModelConfig,
         dm: DataModule,
     ):
         self.state = state
+        self.data_config = data_config
+        self.model_config = model_config
         self.dm = dm
-        self.config = self.state.model_config
 
     def __call__(self):
         self._execute_test_query()
@@ -31,7 +36,7 @@ class RAGGenerator:
         qa_chain = self.state.data_state.get("qa_chain")
         test_query = self._get_test_query()
         response = self._generate_response(qa_chain, test_query)
-        # self._log_generated_response(test_query, response)
+        self._save_helper(test_query, response)
         
     def _get_test_query(self):
         """Retrieve a test query."""
@@ -65,7 +70,10 @@ class RAGGenerator:
             f"Sources used:\n"
             f"{sources}\n"
         )
-        logging.debug(log_entry)
         FileAccess.save_file(
             log_entry, self.state.paths.get_path("generated-answers")
         )
+        
+    def _save_helper(self, query, response):
+        if self.data_config.write_output:
+            self._log_generated_response(query, response)

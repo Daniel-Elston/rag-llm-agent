@@ -23,7 +23,7 @@ class DataPipeline:
     ):
         self.state = state
         self.exe = exe
-        self.config = state.data_config
+        self.data_config = state.data_config
         
         self.dm_raw_docs = DataModule(
             state=self.state,
@@ -31,14 +31,17 @@ class DataPipeline:
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.config.chunk_size,
-            chunk_overlap=self.config.chunk_overlap,
-            separators=self.config.separators,
+            chunk_size=self.data_config.chunk_size,
+            chunk_overlap=self.data_config.chunk_overlap,
+            separators=self.data_config.separators,
         )
 
 
     def prepare_data(self):
-        DocumentLoader(self.state).run(),
+        DocumentLoader(
+            state = self.state,
+            data_config = self.data_config
+        ).run(),
         steps = [
             ProcessDocuments(
                 state = self.state,

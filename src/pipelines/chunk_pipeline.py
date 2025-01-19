@@ -21,7 +21,7 @@ class ChunkPipeline:
     ):
         self.state = state
         self.exe = exe
-        self.config = state.data_config
+        self.data_config = state.data_config
         
         self.dm_processed_docs = DataModule(
             state=self.state,
@@ -29,9 +29,9 @@ class ChunkPipeline:
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.config.chunk_size,
-            chunk_overlap=self.config.chunk_overlap,
-            separators=self.config.separators,
+            chunk_size=self.data_config.chunk_size,
+            chunk_overlap=self.data_config.chunk_overlap,
+            separators=self.data_config.separators,
         )
 
 
@@ -39,6 +39,7 @@ class ChunkPipeline:
         steps = [
             ChunkDocuments(
                 state = self.state,
+                data_config = self.data_config,
                 dm = self.dm_processed_docs,
                 text_splitter = self.text_splitter,
             ),

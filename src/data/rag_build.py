@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from config.state_init import StateManager
+from config.model import ModelConfig
 from src.data.data_module import DataModule
 
 from transformers import AutoTokenizer
@@ -27,11 +28,12 @@ class RAGBuilder:
     """
     def __init__(
         self, state: StateManager,
+        model_config: ModelConfig,
         dm: DataModule,
     ):
         self.state = state
         self.dm = dm
-        self.config = self.state.model_config
+        self.model_config = model_config
         self.faiss_store = self.dm.load()
 
     def __call__(self):
@@ -42,7 +44,8 @@ class RAGBuilder:
         retriever = self._build_retriever()
         local_llm = self._build_local_llm()
         qa_chain = self._build_retrieval_qa_chain(retriever, local_llm)
-        self.state.data_state.set("qa_chain", qa_chain)
+        # self.state.data_state.set("qa_chain", qa_chain)
+        self._save_helper(qa_chain)
 
     def _build_retriever(self):
         """Build a retriever from the FAISS store"""
@@ -50,7 +53,7 @@ class RAGBuilder:
         
     def _build_local_llm(self):
         """Build a local huggingface pipeline for generation"""
-        model_name = self.config.language_model_name
+        model_name = self.model_config.language_model_name
         tokenizer = AutoTokenizer.from_pretrained(
             model_name, 
             truncation=True,
@@ -72,3 +75,6 @@ class RAGBuilder:
             retriever=retriever,
             return_source_documents=True
         )
+    
+    def _save_helper(self, qa_chain):
+        self.state.data_state.set("qa_chain", qa_chain)

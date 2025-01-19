@@ -21,7 +21,8 @@ class RAGPipeline:
     ):
         self.state = state
         self.exe = exe
-        self.config = state.model_config
+        self.data_config = state.data_config
+        self.model_config = state.model_config
         
         self.dm_faiss = DataModule(
             state=self.state,
@@ -36,10 +37,13 @@ class RAGPipeline:
         steps = [
             RAGBuilder(
                 state = self.state,
+                model_config = self.model_config,
                 dm = self.dm_faiss,
             ),
             RAGGenerator(
                 state = self.state,
+                data_config = self.data_config,
+                model_config = self.model_config,
                 dm = self.dm_rag,
             )
         ]
