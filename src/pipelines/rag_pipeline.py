@@ -6,15 +6,16 @@ from src.data.data_module import DataModule
 
 from config.settings import Config, Params
 
-from src.data.rag_build import RAGBuilder
-from src.data.rag_gen import RAGGenerator
+from src.models.rag_build import RAGBuilder
+from src.models.rag_gen import RAGGenerator
+from src.models.hf_llm import LLMPipeline
 
 
 class RAGPipeline:
     """
-    Summary: Takes chunked documents, performs embedding, and stores them in FAISS (in-memory).\n
-        Input: Chunked documents ``data_state key: chunk_docs_all``\n
-        Output: Embedded documents stored in FAISS ``data_state key: faiss_store``
+    Summary: Accesses FAISS vector store, builds RAG pipeline and generates responses.\n
+    Input: FAISS store ``data_state key: faiss_store``\n
+    Output: LLM generated response ``reports/outputs/generated-answers.txt``
     """
     def __init__(
         self, ctx: PipelineContext,
@@ -31,7 +32,11 @@ class RAGPipeline:
         )
         self.dm_rag = DataModule(
             ctx=self.ctx,
-            state_key="qa_chain",
+            state_key="rag_pipeline",
+        )
+        
+        self.local_llm = LLMPipeline(
+            ctx=self.ctx,
         )
 
     def __call__(self):
@@ -39,6 +44,7 @@ class RAGPipeline:
             RAGBuilder(
                 ctx = self.ctx,
                 dm = self.dm_faiss,
+                llm = self.local_llm,
             ),
             RAGGenerator(
                 ctx = self.ctx,

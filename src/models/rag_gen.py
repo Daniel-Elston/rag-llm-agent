@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from config.pipeline_context import PipelineContext
 from utils.file_access import FileAccess
 from src.data.data_module import DataModule
@@ -8,17 +9,15 @@ from config.paths import Paths
 from config.settings import Config, Params
 from config.states import DataState
 
-from langchain.schema import StrOutputParser
-
 
 class RAGGenerator:
     """
     Summary:
-        Executes queries on the QA chain and generates responses. 
+        Executes queries on the RAG Pipeline chain and generates responses. 
         Uses the retrieval and augmentation system built by the RAGBuilder 
         to answer questions with source attribution.\n
-    Input: FAISS store ``data_state key: qa_chain``\n
-    Output: Generated answers and sources
+    Input: RAG pipeline ``data_state key: rag_pipeline``\n
+    Output: LLM generated response
     """
     def __init__(
         self, ctx: PipelineContext,
@@ -33,10 +32,10 @@ class RAGGenerator:
 
 
     def __call__(self):
-        self._execute_test_query()
+        rag_pipeline = self.dm.load()
+        self._execute_test_query(rag_pipeline)
 
-    def _execute_test_query(self):
-        rag_pipeline = self.data_state.get("rag_pipeline")
+    def _execute_test_query(self, rag_pipeline):
         test_query = self._get_test_query()
         response = self._generate_response(rag_pipeline, test_query)
         self._save_helper(test_query, response)
@@ -44,7 +43,7 @@ class RAGGenerator:
     def _get_test_query(self):
         """Retrieve a test query."""
         test_query_store = [
-            "Give me a brief summary of quantum encryption.",
+            "Give a brief summary of quantum encryption.",
             "Give a summary of challenges in quantum computing."
         ]
         return test_query_store[1]
@@ -55,29 +54,22 @@ class RAGGenerator:
         return {
             "query": query,
             "answer": response["result"],
-            # "sources": [
-            #     doc.metadata.get("source", "Unknown source")
-            #     for doc in response["source_documents"]
-            # ]
-            # "sources": response["source_documents"]
         }
         
     def _log_generated_response(self, query, response):
         """Log the generated response to a file."""
         answer = response["answer"]
-        # sources = response["sources"]
 
         log_entry = (
             "=== Test Query ===\n"
             f"Q: {query}\n"
             f"A: {answer}\n"
-            f"Sources used:\n"
-            # f"{sources}\n"
         )
         FileAccess.save_file(
             log_entry, 
             self.paths.get_path("generated-answers")
         )
+        logging.debug(log_entry)
         
     def _save_helper(self, query, response):
         if self.config.write_output:
