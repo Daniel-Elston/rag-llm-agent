@@ -19,6 +19,9 @@ class Config:
 class Params:
     chunk_size: int = attr.ib(default=1000)    
     chunk_overlap: int = attr.ib(default=50)
+    truncation: bool = attr.ib(default=True)
+    max_input_seq_length: int = attr.ib(default=512)
+    max_output_seq_length: int = attr.ib(default=512)
     separators: list = attr.ib(
         default=["\n\n", "\n", ".", ";", ",", " ", ""]
     )

@@ -22,14 +22,14 @@ class LLMPipeline:
         model_name = self.params.language_model_name
         tokenizer = AutoTokenizer.from_pretrained(
             model_name, 
-            truncation=True,
-            model_max_length=512
+            truncation=self.params.truncation,
+            model_max_length=self.params.max_input_seq_length
         )
         model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         hf_pipeline = pipeline(
             "text2text-generation",
             model=model,
             tokenizer=tokenizer,
-            max_length=512
+            max_length=self.params.max_output_seq_length
         )
         return HuggingFacePipeline(pipeline=hf_pipeline)

@@ -16,7 +16,7 @@ class DataPipeline:
     """
     Summary: Loads all raw documents and performs light NLP cleaning.\n
         Input: Raw documents (local or arxiv) ``data_state key: raw_docs_all``\n
-        Output: Chunked documents ``data_state key: proc_docs_all``
+        Output: Lightly processed documents ``data_state key: proc_docs_all``
     """
     def __init__(
         self, ctx: PipelineContext,
