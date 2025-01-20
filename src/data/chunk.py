@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import logging
+
+from config.pipeline_context import PipelineContext
 from utils.file_access import FileAccess
-from config.state_init import StateManager
-from config.data import DataConfig
 from src.data.data_module import DataModule
+
+from config.paths import Paths
+from config.settings import Config
+from config.states import DataState
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
@@ -17,25 +21,21 @@ class ChunkDocuments:
         - Filters out chunks with mostly numerical data
     """
     def __init__(
-        self, state: StateManager,
-        data_config: DataConfig,
+        self, ctx: PipelineContext,
         dm: DataModule,
         text_splitter: RecursiveCharacterTextSplitter
     ):
-        self.state = state
-        self.dm = dm
-        self.data_config = data_config
+        self.ctx = ctx
+        self.documents = dm.load()
         self.text_splitter = text_splitter
-        self.documents = self.dm.load()
+        self.config: Config = ctx.settings.config
+        self.data_state: DataState = ctx.states.data
+        self.paths: Paths = ctx.paths
 
 
     def __call__(self):
         chunks = self.text_splitter.split_documents(self.documents)
         chunks_filtered = [doc for doc in chunks if self.filter_junk_chunks(doc)]
-        # self._log_doc_chunks(chunks_filtered)
-        # self.state.data_state.set("chunk_docs_all", chunks_filtered)
-        # if self.config.write_output:
-        #     self._log_doc_chunks(chunks_filtered)
         self._save_helper(chunks_filtered)
         return chunks_filtered
 
@@ -58,10 +58,10 @@ class ChunkDocuments:
         combined_log = "\n".join(log_entries)
         FileAccess.save_file(
             combined_log,
-            self.state.paths.get_path("sample-chunks")
+            self.paths.get_path("sample-chunks")
         )
     
     def _save_helper(self, chunks_filtered):
-        self.state.data_state.set("chunk_docs_all", chunks_filtered)
-        if self.data_config.write_output:
+        self.data_state.set("chunk_docs_all", chunks_filtered)
+        if self.config.write_output:
             self._log_doc_chunks(chunks_filtered)

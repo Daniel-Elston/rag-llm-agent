@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from config.state_init import StateManager
-from config.model import ModelConfig
+from config.pipeline_context import PipelineContext
 from src.data.data_module import DataModule
 
-from transformers import AutoTokenizer
+from config.settings import Config, Params
+from config.states import DataState
 
+from transformers import AutoTokenizer
 from langchain.chains import RetrievalQA
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
@@ -27,14 +28,15 @@ class RAGBuilder:
         5) Test a single query and log/print result\n
     """
     def __init__(
-        self, state: StateManager,
-        model_config: ModelConfig,
+        self, ctx: PipelineContext,
         dm: DataModule,
     ):
-        self.state = state
-        self.dm = dm
-        self.model_config = model_config
-        self.faiss_store = self.dm.load()
+        self.ctx = ctx
+        self.faiss_store = dm.load()
+        self.params: Params = ctx.settings.params
+        self.config: Config = ctx.settings.config
+        self.data_state: DataState = ctx.states.data
+
 
     def __call__(self):
         self.initialise()
@@ -44,7 +46,6 @@ class RAGBuilder:
         retriever = self._build_retriever()
         local_llm = self._build_local_llm()
         qa_chain = self._build_retrieval_qa_chain(retriever, local_llm)
-        # self.state.data_state.set("qa_chain", qa_chain)
         self._save_helper(qa_chain)
 
     def _build_retriever(self):
@@ -53,7 +54,7 @@ class RAGBuilder:
         
     def _build_local_llm(self):
         """Build a local huggingface pipeline for generation"""
-        model_name = self.model_config.language_model_name
+        model_name = self.params.language_model_name
         tokenizer = AutoTokenizer.from_pretrained(
             model_name, 
             truncation=True,
@@ -77,4 +78,4 @@ class RAGBuilder:
         )
     
     def _save_helper(self, qa_chain):
-        self.state.data_state.set("qa_chain", qa_chain)
+        self.data_state.set("qa_chain", qa_chain)

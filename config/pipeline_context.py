@@ -1,0 +1,16 @@
+from __future__ import annotations
+
+import attr
+from typing import Optional, Union
+from pathlib import Path
+
+from config.paths import Paths
+from config.settings import Settings
+from config.states import States
+
+
+@attr.s
+class PipelineContext:
+    paths: Paths = attr.ib(factory=Paths)
+    settings: Settings = attr.ib(factory=Settings)
+    states: States = attr.ib(factory=States)

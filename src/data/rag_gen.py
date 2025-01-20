@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import logging
-
+from config.pipeline_context import PipelineContext
 from utils.file_access import FileAccess
-from config.state_init import StateManager
-from config.data import DataConfig
-from config.model import ModelConfig
 from src.data.data_module import DataModule
+
+from config.paths import Paths
+from config.settings import Config, Params
+from config.states import DataState
 
 
 class RAGGenerator:
@@ -19,21 +19,22 @@ class RAGGenerator:
     Output: Generated answers and sources
     """
     def __init__(
-        self, state: StateManager,
-        data_config: DataConfig,
-        model_config: ModelConfig,
+        self, ctx: PipelineContext,
         dm: DataModule,
     ):
-        self.state = state
-        self.data_config = data_config
-        self.model_config = model_config
+        self.ctx = ctx
         self.dm = dm
+        self.params: Params = ctx.settings.params
+        self.config: Config = ctx.settings.config
+        self.data_state: DataState = ctx.states.data
+        self.paths: Paths = ctx.paths
+
 
     def __call__(self):
         self._execute_test_query()
 
     def _execute_test_query(self):
-        qa_chain = self.state.data_state.get("qa_chain")
+        qa_chain = self.data_state.get("qa_chain")
         test_query = self._get_test_query()
         response = self._generate_response(qa_chain, test_query)
         self._save_helper(test_query, response)
@@ -71,9 +72,10 @@ class RAGGenerator:
             f"{sources}\n"
         )
         FileAccess.save_file(
-            log_entry, self.state.paths.get_path("generated-answers")
+            log_entry, 
+            self.paths.get_path("generated-answers")
         )
         
     def _save_helper(self, query, response):
-        if self.data_config.write_output:
+        if self.config.write_output:
             self._log_generated_response(query, response)

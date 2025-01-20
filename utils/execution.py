@@ -2,27 +2,24 @@ from __future__ import annotations
 
 from typing import Callable
 
-import pandas as pd
-import logging
+from config.settings import Config
+from config.paths import Paths
 
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from utils.logging_utils import log_step
 
-
 class TaskExecutor:
-    def __init__(self, state: StateManager):
-        self.data_config = state.data_config
-        self.paths = state.paths
+    def __init__(self, ctx: PipelineContext):
+        self.config: Config = ctx.settings.config
+        self.paths: Paths = ctx.paths
 
     def run_main_step(self, step: Callable, *args, **kwargs):
         """Pipeline runner for main pipelines scripts (main.py)"""
-        # return step(*args, **kwargs)
         logged_step = log_step()(step)
         return logged_step(*args, **kwargs)
 
     def run_parent_step(self, step: Callable, *args, **kwargs):
         """Pipeline runner for parent pipelines scripts (src/pipelines/*)"""
-        # return step(*args, **kwargs)
         logged_step = log_step()(step)
         return logged_step(*args, **kwargs)
 

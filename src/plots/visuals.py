@@ -9,7 +9,7 @@ import seaborn as sns
 import torchaudio as ta
 from torch.utils.data import DataLoader
 
-from config.state_init import StateManager
+from config.pipeline_context import StateManager
 from src.models.metrics import MetricLogger
 
 

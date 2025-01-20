@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import attr
 import logging
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Optional, Union
 from pprint import pformat
+from typing import Dict, Optional, Union
 
 
 paths_store = {
@@ -24,11 +24,11 @@ paths_store = {
 }
 
 
-@dataclass
-class PathsConfig:
-    paths: Dict[str, Path] = field(default_factory=dict)
+@attr.s
+class Paths:
+    paths: Dict[str, Path] = attr.ib(factory=dict)
 
-    def __post_init__(self):
+    def __attrs_post_init__(self):
         self.paths = {k: Path(v) for k, v in paths_store.items()}
         logging.debug(f"PathsConfig:\n{pformat(self.paths)}\n")
 

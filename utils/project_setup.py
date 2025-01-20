@@ -7,7 +7,7 @@ from typing import Tuple
 import dotenv
 import yaml
 
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from utils.execution import TaskExecutor
 from utils.logging_config import setup_logging
 
@@ -22,7 +22,7 @@ def initialize_project(
     config_filename: str = "config/config.yaml",
     env_filename: str = ".env",
     log_filename: str = None,
-) -> Tuple[Path, dict, StateManager]:
+) -> Tuple[Path, dict, PipelineContext]:
     """Initialize the project environment, load configuration, set up logging, and create StateManager."""
     project_dir = Path(__file__).resolve().parents[1]
 
@@ -38,7 +38,7 @@ def initialize_project(
     setup_logging("DataPipeline", project_dir, log_filename, project_config)
 
     # Initialize StateManager
-    state_manager = StateManager()
+    state_manager = PipelineContext()
 
     # Initialize Executor
     exe = TaskExecutor(state_manager)
@@ -51,7 +51,7 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-def init_project() -> Tuple[Path, dict, StateManager]:
+def init_project() -> Tuple[Path, dict, PipelineContext]:
     """Set up project environment, configuration, logging, and StateManager."""
     project_dir, project_config, state_manager, exe = initialize_project()
     logging.getLogger().setLevel(logging.DEBUG)

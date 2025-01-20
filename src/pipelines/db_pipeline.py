@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from config.state_init import StateManager
+from config.pipeline_context import StateManager
 from src.db.db_factory import DatabaseFactory
 from utils.execution import TaskExecutor
 

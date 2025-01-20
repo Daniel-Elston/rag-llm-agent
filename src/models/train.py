@@ -5,7 +5,7 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
 from config.model import ModelConfig
-from config.state_init import StateManager
+from config.pipeline_context import StateManager
 from src.base.base_trainer import BaseTrainer
 from src.data.data_module import HDF5DataModule
 from src.models.cnn import CNN

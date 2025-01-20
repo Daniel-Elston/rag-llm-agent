@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pandas as pd
-from config.state_init import StateManager
+from config.pipeline_context import StateManager
 from src.db.db_components import DatabaseOperations, DataHandler
 
 

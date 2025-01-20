@@ -3,8 +3,9 @@ from __future__ import annotations
 import re
 import unicodedata
 
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from src.data.data_module import DataModule
+from config.states import DataState
 
 
 class ProcessDocuments:
@@ -16,17 +17,17 @@ class ProcessDocuments:
         - Fix repeated punctuation (e.g. ". ." -> ".")
     """
     def __init__(
-        self, state: StateManager,
+        self, ctx: PipelineContext,
         dm: DataModule,
     ):
-        self.state = state
-        self.dm = dm
-        self.documents = self.dm.load()
+        self.ctx = ctx
+        self.documents = dm.load()
+        self.data_state: DataState = ctx.states.data
 
     def __call__(self):
         for doc in self.documents:
             doc.page_content = self.clean_document_text(doc.page_content)
-        self.state.data_state.set("proc_docs_all", self.documents)
+        self.data_state.set("proc_docs_all", self.documents)
 
     def clean_document_text(self, text: str) -> str:
         text = unicodedata.normalize('NFKC', text)

@@ -5,8 +5,10 @@ from pathlib import Path
 import pandas as pd
 
 from utils.file_access import FileAccess
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from typing import List, Dict, Callable, Optional, Union, Any
+
+from config.states import DataState
 
 
 class DataModule:
@@ -19,7 +21,7 @@ class DataModule:
         data_dict (Any): Data dictionary with transformations.
     """
     def __init__(
-        self, state: StateManager, 
+        self, ctx: PipelineContext, 
         state_key: str = None,
         data_path: Path = None,
         data_dict: Any = None,
@@ -28,10 +30,11 @@ class DataModule:
         if not state_key and not data_path:
             raise ValueError("Either `state_key` or `data_path` must be provided.")
         
-        self.state = state
+        self.ctx = ctx
         self.state_key = state_key
         self.data_path = data_path
         self.dd = data_dict
+        self.data_state: DataState = ctx.states.data
 
     def load(self):
         """
@@ -53,7 +56,7 @@ class DataModule:
         return FileAccess.load_file(self.data_path)
     
     def load_data_from_state(self):
-        return self.state.data_state.get(self.state_key)
+        return self.data_state.get(self.state_key)
 
     def apply_data_dict(self, df):
         """

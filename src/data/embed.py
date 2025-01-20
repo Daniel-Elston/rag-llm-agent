@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import logging
-import numpy as np
+from config.pipeline_context import PipelineContext
 from utils.file_access import FileAccess
-from config.state_init import StateManager
-from config.data import DataConfig
-from config.model import ModelConfig
 from src.data.data_module import DataModule
+
+from config.paths import Paths
+from config.settings import Config
+from config.states import DataState
 
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -21,39 +21,37 @@ class BuildVectorStore:
         - Stores FAISS vector store in state
     """
     def __init__(
-        self, state: StateManager,
-        data_config: DataConfig,
-        # model_config: ModelConfig,
+        self, ctx: PipelineContext,
         dm: DataModule,
         embeddings: HuggingFaceEmbeddings
     ):
-        self.state = state
-        self.data_config = data_config
-        # self.model_config = model_config
-        self.dm = dm
+        self.ctx = ctx
+        self.chunked_docs = dm.load()
         self.embeddings = embeddings
-        self.chunked_docs = self.dm.load()
+        self.config: Config = ctx.settings.config
+        self.data_state: DataState = ctx.states.data
+        self.paths: Paths = ctx.paths
+
 
     def __call__(self):
         faiss_store = FAISS.from_documents(
             self.chunked_docs,
             self.embeddings
         )
-        # self._log_doc_embeddings(faiss_store, chunked_docs)
-        # self.state.data_state.set("faiss_store", faiss_store)
         self._save_helper(faiss_store, self.chunked_docs)
     
     def _log_doc_embeddings(self, faiss_store, chunked_docs):
         raw_vectors = faiss_store.index.reconstruct_n(0, len(chunked_docs))
-        for i, vec in enumerate(raw_vectors[:2]):  # first 2 embeddings
+        for i, vec in enumerate(raw_vectors[:2]):
             log_entry = (
                 f"Embedding {i}, length{len(vec)}:\n{vec}\n\n"
             )
             FileAccess.save_file(
-                log_entry, self.state.paths.get_path("embeddings_sample")
+                log_entry, 
+                self.paths.get_path("embeddings_sample")
             )
     
     def _save_helper(self, faiss_store, chunked_docs):
-        self.state.data_state.set("faiss_store", faiss_store)
-        if self.data_config.write_output:
+        self.data_state.set("faiss_store", faiss_store)
+        if self.config.write_output:
             self._log_doc_embeddings(faiss_store, chunked_docs)

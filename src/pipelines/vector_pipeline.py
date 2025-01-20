@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from utils.execution import TaskExecutor
-
 from src.data.data_module import DataModule
+
+from config.settings import Config, Params
+
 from src.data.embed import BuildVectorStore
 
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -16,29 +18,28 @@ class VectorStorePipeline:
         Output: Embedded documents stored in FAISS ``data_state key: faiss_store``
     """
     def __init__(
-        self, state: StateManager,
+        self, ctx: PipelineContext,
         exe: TaskExecutor
     ):
-        self.state = state
+        self.ctx = ctx
         self.exe = exe
-        self.data_config = state.data_config
-        self.model_config = state.model_config
+        self.config: Config = ctx.settings.config
+        self.params: Params = ctx.settings.params
         
         self.dm_chunk_docs = DataModule(
-            state=self.state,
+            ctx=self.ctx,
             state_key="chunk_docs_all",
         )
         
         self.embeddings = HuggingFaceEmbeddings(
-            model_name=self.model_config.embedding_model_name
+            model_name=self.params.embedding_model_name
         )
 
 
     def build_vector_store(self):
         steps = [
             BuildVectorStore(
-                state = self.state,
-                data_config = self.data_config,
+                ctx = self.ctx,
                 dm = self.dm_chunk_docs,
                 embeddings = self.embeddings
             )

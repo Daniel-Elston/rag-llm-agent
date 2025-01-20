@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from config.state_init import StateManager
+from config.pipeline_context import PipelineContext
 from utils.execution import TaskExecutor
-
 from src.data.data_module import DataModule
+
+from config.settings import Config, Params
+
 from src.data.chunk import ChunkDocuments
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -16,30 +18,30 @@ class ChunkPipeline:
         Output: Chunked documents ``data_state key: chunk_docs_all``
     """
     def __init__(
-        self, state: StateManager,
+        self, ctx: PipelineContext,
         exe: TaskExecutor
     ):
-        self.state = state
+        self.ctx = ctx
         self.exe = exe
-        self.data_config = state.data_config
+        self.params: Params = ctx.settings.params
+        self.config: Config = ctx.settings.config
         
         self.dm_processed_docs = DataModule(
-            state=self.state,
+            ctx=self.ctx,
             state_key="proc_docs_all",
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.data_config.chunk_size,
-            chunk_overlap=self.data_config.chunk_overlap,
-            separators=self.data_config.separators,
+            chunk_size=self.params.chunk_size,
+            chunk_overlap=self.params.chunk_overlap,
+            separators=self.params.separators,
         )
 
 
     def chunk_data(self):
         steps = [
             ChunkDocuments(
-                state = self.state,
-                data_config = self.data_config,
+                ctx = self.ctx,
                 dm = self.dm_processed_docs,
                 text_splitter = self.text_splitter,
             ),
