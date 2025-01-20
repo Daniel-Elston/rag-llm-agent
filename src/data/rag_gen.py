@@ -8,6 +8,8 @@ from config.paths import Paths
 from config.settings import Config, Params
 from config.states import DataState
 
+from langchain.schema import StrOutputParser
+
 
 class RAGGenerator:
     """
@@ -34,42 +36,43 @@ class RAGGenerator:
         self._execute_test_query()
 
     def _execute_test_query(self):
-        qa_chain = self.data_state.get("qa_chain")
+        rag_pipeline = self.data_state.get("rag_pipeline")
         test_query = self._get_test_query()
-        response = self._generate_response(qa_chain, test_query)
+        response = self._generate_response(rag_pipeline, test_query)
         self._save_helper(test_query, response)
         
     def _get_test_query(self):
         """Retrieve a test query."""
         test_query_store = [
             "Give me a brief summary of quantum encryption.",
-            "Give me a brief summary of challenges in quantum computing."
+            "Give a summary of challenges in quantum computing."
         ]
         return test_query_store[1]
         
-    def _generate_response(self, qa_chain, query: str):
+    def _generate_response(self, rag_pipeline, query: str):
         """Generate a response from the QA chain for given query."""
-        response = qa_chain.invoke({"query": query})
+        response = rag_pipeline.invoke({"query": query})
         return {
             "query": query,
             "answer": response["result"],
-            "sources": [
-                doc.metadata.get("source", "Unknown source")
-                for doc in response["source_documents"]
-            ]
+            # "sources": [
+            #     doc.metadata.get("source", "Unknown source")
+            #     for doc in response["source_documents"]
+            # ]
+            # "sources": response["source_documents"]
         }
         
     def _log_generated_response(self, query, response):
         """Log the generated response to a file."""
         answer = response["answer"]
-        sources = response["sources"]
+        # sources = response["sources"]
 
         log_entry = (
             "=== Test Query ===\n"
             f"Q: {query}\n"
             f"A: {answer}\n"
             f"Sources used:\n"
-            f"{sources}\n"
+            # f"{sources}\n"
         )
         FileAccess.save_file(
             log_entry, 

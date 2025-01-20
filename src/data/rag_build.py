@@ -7,9 +7,13 @@ from config.settings import Config, Params
 from config.states import DataState
 
 from transformers import AutoTokenizer
-from langchain.chains import RetrievalQA
 from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+from langchain_core.documents import Document
+
+from langchain.schema.runnable import RunnableMap, RunnableLambda
+from langchain.prompts import ChatPromptTemplate
+from operator import itemgetter
 
 
 class RAGBuilder:
@@ -42,16 +46,16 @@ class RAGBuilder:
         self.initialise()
 
     def initialise(self):
-        """Initialize the retrieval QA pipeline components."""
+        """Initialize the RAG pipeline components and save to state."""
         retriever = self._build_retriever()
         local_llm = self._build_local_llm()
-        qa_chain = self._build_retrieval_qa_chain(retriever, local_llm)
-        self._save_helper(qa_chain)
-
+        rag_pipeline = self._build_rag_pipeline(retriever, local_llm)
+        self._save_helper(rag_pipeline)
+        
     def _build_retriever(self):
         """Build a retriever from the FAISS store"""
         return self.faiss_store.as_retriever()
-        
+    
     def _build_local_llm(self):
         """Build a local huggingface pipeline for generation"""
         model_name = self.params.language_model_name
@@ -68,14 +72,83 @@ class RAGBuilder:
             max_length=512
         )
         return HuggingFacePipeline(pipeline=hf_pipeline)
+    
+    def _build_rag_pipeline(self, retriever, local_llm):
+        result_docs = retriever.invoke("test query")
+        for i in range(len(result_docs)):
+            assert type(result_docs[i]) is Document
+        
+        retrieval_step = self.make_retrieval_step(retriever)
+        docs_to_str_step = self.make_docs_to_str_step()
+        prompt_step = self.make_prompt_step()
+        output_finaliser_step = self.make_output_finaliser_step()
+        
+        rag_pipeline = (
+            retrieval_step
+            | RunnableMap({
+                "docs": itemgetter("docs"),
+                "question": itemgetter("question"),
+            })
+            | RunnableMap({
+                "context": (itemgetter("docs") | docs_to_str_step),
+                "question": itemgetter("question"),
+                "source_docs": itemgetter("docs")
+            })
+            | prompt_step
+            | local_llm
+            | output_finaliser_step
+        )
+        return rag_pipeline
+    
+    @staticmethod
+    def make_retrieval_step(retriever):
+        """
+        INPUT: {"query": ...}
+        OUTPUT: {"docs", "question"}.
+        """
+        return RunnableLambda(
+            lambda inputs: {
+                "docs": retriever.invoke(inputs["query"]),
+                "question": inputs["query"],
+            },
+            name="retrieval",
+        )
 
-    def _build_retrieval_qa_chain(self, retriever, local_llm):
-        """"Build a retrieval QA chain"""
-        return RetrievalQA.from_chain_type(
-            llm=local_llm,
-            retriever=retriever,
-            return_source_documents=True
+    @staticmethod
+    def make_docs_to_str_step():
+        """Convert the list of docs to a single string."""
+        return RunnableLambda(
+            lambda docs: "\n\n".join(doc.page_content for doc in docs),
+            name="docs_to_str"
+        )
+
+    @staticmethod
+    def make_prompt_step():
+        """
+        Return a ChatPromptTemplate (or any prompt). 
+        Prompt expects {"context", "question"} as input.
+        """
+        return ChatPromptTemplate.from_template(
+            "Context:\n{context}\n\nUser Question: {question}\n\n"
+            # "Please provide a concise answer referencing the context above."
+            # "If something isn't in the context, say you do not know."
+            "Output some key words from the context."
+        )
+
+    @staticmethod
+    def make_output_finaliser_step():
+        """
+        Merges the LLM output with "source_docs"
+        OUTPUT: Final dictionary:
+            {"result": <text>, "source_documents": <list of docs>}
+        """
+        return RunnableLambda(
+            lambda inputs: {
+                "result": inputs,           
+                # "source_documents": inputs["source_docs"] 
+            },
+            name="output_finaliser"
         )
     
-    def _save_helper(self, qa_chain):
-        self.data_state.set("qa_chain", qa_chain)
+    def _save_helper(self, rag_pipeline):
+        self.data_state.set("rag_pipeline", rag_pipeline)
