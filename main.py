@@ -3,15 +3,17 @@ from __future__ import annotations
 import logging
 
 from config.pipeline_context import PipelineContext
+from utils.execution import TaskExecutor
 from src.pipelines.data_pipeline import DataPipeline
 from src.pipelines.chunk_pipeline import ChunkPipeline
 from src.pipelines.vector_pipeline import VectorStorePipeline
-from src.pipelines.rag_pipeline import RAGPipeline
-from utils.execution import TaskExecutor
+from src.pipelines.retrieval_pipeline import RAGRetrievalPipeline
+from src.pipelines.conversation_pipeline import RAGConversationalPipeline
 from utils.project_setup import init_project
 
 
 class MainPipeline:
+    """RAG Pipeline main entry point."""
     def __init__(
         self, ctx: PipelineContext,
         exe: TaskExecutor
@@ -20,12 +22,12 @@ class MainPipeline:
         self.exe = exe
 
     def run(self):
-        """ETL pipeline main entry point."""
         steps = [
-            DataPipeline(self.ctx, self.exe).prepare_data,
-            ChunkPipeline(self.ctx, self.exe).chunk_data,
+            DataPipeline(self.ctx, self.exe).prepare_raw_data,
+            ChunkPipeline(self.ctx, self.exe).chunk_documents_for_embedding,
             VectorStorePipeline(self.ctx, self.exe).build_vector_store,
-            RAGPipeline(self.ctx, self.exe),
+            RAGRetrievalPipeline(self.ctx, self.exe).run,
+            RAGConversationalPipeline(self.ctx, self.exe).run,
         ]
         self.exe._execute_steps(steps, stage="main")
 

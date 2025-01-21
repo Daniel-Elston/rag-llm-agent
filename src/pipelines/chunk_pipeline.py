@@ -38,7 +38,7 @@ class ChunkPipeline:
         )
 
 
-    def chunk_data(self):
+    def chunk_documents_for_embedding(self):
         steps = [
             ChunkDocuments(
                 ctx = self.ctx,

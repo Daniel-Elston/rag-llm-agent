@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from config.pipeline_context import PipelineContext
 
 from config.settings import Params
@@ -10,7 +9,10 @@ from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
 
-class LLMPipeline:
+class LLMGenerator:
+    """
+    Summary: Handles HuggingFace LLM model and tokeniser initialisation
+    """
     def __init__(
         self, ctx: PipelineContext,
     ):
@@ -18,7 +20,6 @@ class LLMPipeline:
         self.params: Params = ctx.settings.params
         
     def hf_gen_pipeline(self):
-        """Build a local huggingface pipeline for generation"""
         model_name = self.params.language_model_name
         tokenizer = AutoTokenizer.from_pretrained(
             model_name, 

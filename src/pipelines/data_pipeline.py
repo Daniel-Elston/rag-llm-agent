@@ -38,7 +38,7 @@ class DataPipeline:
         )
 
 
-    def prepare_data(self):
+    def prepare_raw_data(self):
         DocumentLoader(ctx = self.ctx).run(),
         steps = [
             ProcessDocuments(

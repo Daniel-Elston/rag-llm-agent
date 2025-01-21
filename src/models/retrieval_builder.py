@@ -6,14 +6,14 @@ from src.data.data_module import DataModule
 from config.settings import Config, Params
 from config.states import DataState
 
-from src.models.hf_llm import LLMPipeline
+from src.models.hf_llm import LLMGenerator
 
 from langchain.schema.runnable import RunnableMap, RunnableLambda
 from langchain.prompts import ChatPromptTemplate
 from operator import itemgetter
 
 
-class RAGBuilder:
+class RAGRetrievalBuilder:
     """
     Summary: 
         Builds the retrieval system and augments retrieved documents into RAG pipeline
@@ -23,14 +23,14 @@ class RAGBuilder:
     Output: RAG Pipeline ``data_state key: rag_pipeline``\n
     Steps:
         1) Load FAISS store from state\n
-        2) Load a retriever and the local LLM\n
-        3) Build a RAG Pipeline chain\n
+        2) Initialise the retriever from the FAISS store\n
+        3) Build the RAG Pipeline chain by combining retrieval and augmentation steps\n
         4) Save RAG Pipeline chain to state
     """
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,
-        llm: LLMPipeline
+        llm: LLMGenerator
     ):
         self.ctx = ctx
         self.faiss_store = dm.load()
@@ -107,7 +107,7 @@ class RAGBuilder:
         INPUT: {"docs", "question"}
         OUTPUT: {"context", "question", "source_docs"}
         """
-        docs_to_str_step = RAGBuilder.make_docs_to_str_step()
+        docs_to_str_step = RAGRetrievalBuilder.make_docs_to_str_step()
         return RunnableMap({
             "context": (itemgetter("docs") | docs_to_str_step),
             "question": itemgetter("question"),

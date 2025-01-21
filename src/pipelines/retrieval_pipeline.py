@@ -4,18 +4,17 @@ from config.pipeline_context import PipelineContext
 from utils.execution import TaskExecutor
 from src.data.data_module import DataModule
 
-from config.settings import Config, Params
-
-from src.models.rag_build import RAGBuilder
-from src.models.rag_gen import RAGGenerator
-from src.models.hf_llm import LLMPipeline
+from src.models.retrieval_builder import RAGRetrievalBuilder
+from src.models.response_generator import RAGResponseGenerator
+from src.models.hf_llm import LLMGenerator
 
 
-class RAGPipeline:
+class RAGRetrievalPipeline:
     """
-    Summary: Accesses FAISS vector store, builds RAG pipeline and generates responses.\n
-    Input: FAISS store ``data_state key: faiss_store``\n
-    Output: LLM generated response ``reports/outputs/generated-answers.txt``
+    Summary: Builds the retrieval system and generates responses for single-turn QA.
+        Combines document retrieval and LLM-based response generation.\n
+        Input: FAISS vector store ``data_state key: faiss_store``\n
+        Output: Generated responses ``data_state key: generated_answers``
     """
     def __init__(
         self, ctx: PipelineContext,
@@ -23,8 +22,6 @@ class RAGPipeline:
     ):
         self.ctx = ctx
         self.exe = exe
-        self.config: Config = ctx.settings.config
-        self.params: Params = ctx.settings.params
         
         self.dm_faiss = DataModule(
             ctx=self.ctx,
@@ -35,18 +32,19 @@ class RAGPipeline:
             state_key="rag_pipeline",
         )
         
-        self.local_llm = LLMPipeline(
+        self.local_llm = LLMGenerator(
             ctx=self.ctx,
         )
 
-    def __call__(self):
+
+    def run(self):
         steps = [
-            RAGBuilder(
+            RAGRetrievalBuilder(
                 ctx = self.ctx,
                 dm = self.dm_faiss,
                 llm = self.local_llm,
             ),
-            RAGGenerator(
+            RAGResponseGenerator(
                 ctx = self.ctx,
                 dm = self.dm_rag,
             )

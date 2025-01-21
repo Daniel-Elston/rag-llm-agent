@@ -13,7 +13,7 @@ from config.states import DataState
 
 class DataModule:
     """
-    Summary: Base class for loading data from a file or in-memory state.
+    Summary: Base class for loading data from file or in-memory state.\n
     Args:
         state (StateManager): The state manager to access in-memory data.
         state_key (str): Key to retrieve data from in-memory state.

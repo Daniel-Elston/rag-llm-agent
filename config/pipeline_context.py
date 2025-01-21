@@ -11,6 +11,12 @@ from config.states import States
 
 @attr.s
 class PipelineContext:
+    """
+    Attributes:
+        paths: Paths
+        settings: Settings
+        states: States
+    """
     paths: Paths = attr.ib(factory=Paths)
     settings: Settings = attr.ib(factory=Settings)
     states: States = attr.ib(factory=States)

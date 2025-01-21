@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+
 from config.pipeline_context import PipelineContext
 from utils.file_access import FileAccess
 from src.data.data_module import DataModule
@@ -10,14 +11,19 @@ from config.settings import Config, Params
 from config.states import DataState
 
 
-class RAGGenerator:
+class RAGResponseGenerator:
     """
     Summary:
-        Executes queries on the RAG Pipeline chain and generates responses. 
+        Executes queries on the RAG Pipeline and generates responses. 
         Uses the retrieval and augmentation system built by the RAGBuilder 
         to answer questions with source attribution.\n
     Input: RAG pipeline ``data_state key: rag_pipeline``\n
-    Output: LLM generated response
+    Output: LLM generated response\n
+    Steps:
+        1) Load the RAG pipeline chain from state\n
+        2) Execute queries on the RAG pipeline for retrieval and augmentation\n
+        3) Generate responses from the LLM\n
+        4) Save and log the generated responses for downstream use
     """
     def __init__(
         self, ctx: PipelineContext,
