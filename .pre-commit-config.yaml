@@ -1,36 +1,3 @@
-# repos:
-#   - repo: https://${GIT_PAT}@github.com/pre-commit/pre-commit-hooks
-#     rev: v4.6.0
-#     hooks:
-#       - id: end-of-file-fixer
-#       - id: trailing-whitespace
-
-#   - repo: https://${GIT_PAT}@github.com/psf/black
-#     rev: 24.8.0
-#     hooks:
-#       - id: black
-#         args: [ "--line-length", "88", "--skip-string-normalization" ]
-#         exclude: |
-#           (?x)^(
-#             # Exclude files with your preferred argument layout
-#             .*\.py$
-#           )$
-
-#   - repo: https://${GIT_PAT}@github.com/PyCQA/isort
-#     rev: 5.13.2
-#     hooks:
-#       - id: isort
-#         args: [ "--profile", "black" ]
-
-#   # - repo: https://github.com/pre-commit/mirrors-flake8
-#   - repo: https://${GIT_PAT}@github.com/pre-commit/mirrors-flake8
-#     rev: v6.1.0
-#     hooks:
-#       - id: flake8
-#         args: [ "--max-line-length", "88" ]
-
-
-
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -39,7 +6,6 @@ repos:
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: debug-statements
-    # -   id: double-quote-string-fixer
     -   id: name-tests-test
     -   id: requirements-txt-fixer
 -   repo: https://github.com/asottile/setup-cfg-fmt
@@ -56,14 +22,13 @@ repos:
     rev: v2.0.4
     hooks:
     -   id: autopep8
+        args:
+        - --max-line-length=120
+        - --ignore=E127,E128,E501
+        - --in-place
+        - --recursive
 -   repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
     -   id: flake8
         args: ['--max-line-length=120']
-# -   repo: https://github.com/pre-commit/mirrors-mypy
-#     rev: v1.7.1
-#     hooks:
-#     -   id: mypy
-#         additional_dependencies: [types-all]
-        # exclude: ^testing/resources/

@@ -5,7 +5,10 @@ import time
 from functools import wraps
 from pathlib import Path
 from pprint import pformat
-from typing import Callable, List, Optional, Union
+from typing import Callable
+from typing import List
+from typing import Optional
+from typing import Union
 
 
 def log_cls_methods(cls):
@@ -13,6 +16,7 @@ def log_cls_methods(cls):
         if callable(method):
             setattr(cls, name, log_step(view=True)(method))
     return cls
+
 
 def log_step(
     load_path: Optional[Union[str, Path]] = None,

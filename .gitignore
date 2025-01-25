@@ -1,12 +1,12 @@
         # self.config = self.ctx.config
         # self.params = self.ctx.params
-        
+
         # # self.data_state = self.ctx.data_state
         # self.ctx.states.data.set("raw_docs_all", self.all_docs)
         # self.ctx.data_state.set("raw_docs_all", self.all_docs)
-        
+
         # FileAccess.save_file(log_entry, self.ctx.get_path("raw-doc-metadata"))
-        
+
 
 tb_logs/
 checkpoints/

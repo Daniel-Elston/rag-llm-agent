@@ -11,7 +11,7 @@ and Zhejiang Key Laboratory of Micro-nano Quantum Chips and Quantum Control, Zhe
 2Graduate School of China Academy of Engineering Physics, Beijing 100193, China
 3State Key Laboratory of Extreme Photonics and Instrumentation,
 College of Optical Science and Engineering, Zhejiang University, Hangzhou 310027, China
-4Hefei National Laboratory, 
+4Hefei National Laboratory,
 
 Document 2:
 Metadata:
@@ -188,7 +188,7 @@ rmann, G.J.Norris, C.K.Andersen, M.Müller, A.Blais,
 C. Eichler, and A. Wallraff, Realizing repeated quantum
 error correction in a distance-three surface code, Nature
 605, 669 (2022).
-[13] Y. Zhao, Y. 
+[13] Y. Zhao, Y.
 
 Document 9:
 Metadata:
@@ -208,7 +208,7 @@ pens, C. Erickson, L. Faoro, E. Farhi, A. G. Fowler,
 B. Foxen, M. Giustina, A. Greene, J. A. Gross, M. P.
 Harrigan, S.D.Harrington, J.Hilton, S.Hong, T.Huang,
 W. J. Huggins, L. B. Ioffe, S. V. Isakov, E. Jeffrey,
-Z. Jiang, D. Kafri, K. Kechedzhi, T. Khattar, 
+Z. Jiang, D. Kafri, K. Kechedzhi, T. Khattar,
 
 Document 10:
 Metadata:
@@ -370,7 +370,7 @@ Meas.
 Method I
 Processor II
 FIG. S3. Cumulative distributions of operation er-
-ror rates measured on 
+ror rates measured on
 
 Document 14:
 Metadata:
@@ -763,7 +763,7 @@ Review Letters, American Physical Society, 1992.
 [27] V . Scarani, A. Acín, G. Ribordy, N. Gisin,
 “Quantum Cryptography Protocols Robust against
 Photon Number Splitting Attacks for Weak Laser Pulse
-Implementations”, Physical Review Letters, 
+Implementations”, Physical Review Letters,
 
 Document 28:
 Metadata:
@@ -809,4 +809,3 @@ There
 is, however, a large body of experimental data in the
 relevant literature for entanglement-based quantum key
 distrib
-

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 class ApplyDataDict:
@@ -13,7 +13,7 @@ class ApplyDataDict:
             "rename_mapping": {},
             "na_values": [],
         }
-    
+
     def apply_dtypes(self, df):
         for col, dtype in self.data["dtypes"].items():
             if col in df.columns:
@@ -32,10 +32,10 @@ class ApplyDataDict:
                 if col in df.columns
             ]
         return df[use_cols]
-    
+
     def apply_rename_mapping(self, df):
         return df.rename(columns=self.data["rename_mapping"])
-    
+
     def apply_na_values(self, df):
         for v in self.data.get("na_values", []):
             df = df.replace(v, np.nan)
@@ -50,6 +50,7 @@ class ApplyDataDict:
             # "apply_na_values": self.apply_na_values,
         }
 
+
 class NoDataDict(ApplyDataDict):
     def __init__(self):
         super().__init__()
@@ -59,6 +60,7 @@ class NoDataDict(ApplyDataDict):
             "rename_mapping": {},
             "na_values": [],
         }
+
 
 class LogsDataDict(ApplyDataDict):
     def __init__(self):

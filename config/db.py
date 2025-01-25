@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-import logging
 import os
-from dataclasses import dataclass, field
-from pprint import pformat
+from dataclasses import dataclass
+from dataclasses import field
 
 import attr
 
-from src.db.db_components import DatabaseConnection, DatabaseOperations, DataHandler
+from src.db.db_components import DatabaseConnection
+from src.db.db_components import DatabaseOperations
+from src.db.db_components import DataHandler
 
 
 def db_creds():
@@ -17,6 +18,7 @@ def db_creds():
         "host": os.getenv("POSTGRES_HOST"),
         "port": os.getenv("POSTGRES_PORT"),
     }
+
 
 def db_info():
     return {
@@ -31,15 +33,15 @@ class DatabaseConfig:
     stage: str = attr.ib('load2')
     admin_creds: dict = attr.ib(factory=db_creds)
     db_info: dict = attr.ib(factory=db_info)
-    
-    database:str = attr.ib()
+
+    database: str = attr.ib()
     schema: str = attr.ib()
     table: str = attr.ib()
-    
+
     overwrite: bool = False
     chunk_size: int = 500_000
     batch_size: int = 100_000
-    
+
     @database.default
     def _database_default(self):
         return self.db_info["database"]

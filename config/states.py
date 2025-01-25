@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import attr
 import logging
+
+import attr
 
 
 @attr.s

@@ -1,21 +1,22 @@
 from __future__ import annotations
 
-from config.pipeline_context import PipelineContext
-from src.data.data_module import DataModule
-
-from config.settings import Config, Params
-from config.states import DataState
-
-from src.models.hf_llm import LLMGenerator
-
-from langchain.schema.runnable import RunnableMap, RunnableLambda
-from langchain.prompts import ChatPromptTemplate
 from operator import itemgetter
+
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.runnable import RunnableLambda
+from langchain.schema.runnable import RunnableMap
+
+from config.pipeline_context import PipelineContext
+from config.settings import Config
+from config.settings import Params
+from config.states import DataState
+from src.data.data_module import DataModule
+from src.models.hf_llm import LLMGenerator
 
 
 class RAGRetrievalBuilder:
     """
-    Summary: 
+    Summary:
         Builds the retrieval system and augments retrieved documents into RAG pipeline
         for later generation. Utilises FAISS for retrieval and a Hugging Face LLM for
         local text generation.\n
@@ -27,6 +28,7 @@ class RAGRetrievalBuilder:
         3) Build the RAG Pipeline chain by combining retrieval and augmentation steps\n
         4) Save RAG Pipeline chain to state
     """
+
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,
@@ -39,12 +41,11 @@ class RAGRetrievalBuilder:
         self.config: Config = ctx.settings.config
         self.data_state: DataState = ctx.states.data
 
-
     def __call__(self):
         self.initialise()
 
     def initialise(self):
-        """Initialize the RAG pipeline components and save to state."""    
+        """Initialize the RAG pipeline components and save to state."""
         retriever = self.faiss_store.as_retriever()
         rag_pipeline = self._build_rag_pipeline(retriever, self.local_llm)
         self._save_helper(rag_pipeline)
@@ -55,7 +56,7 @@ class RAGRetrievalBuilder:
         second_map_step = self._second_map_step()
         prompt_step = self.make_prompt_step()
         output_finaliser_step = self.make_output_finaliser_step()
-        
+
         rag_pipeline = (
             retrieval_step
             | first_map_step
@@ -117,7 +118,7 @@ class RAGRetrievalBuilder:
     @staticmethod
     def make_prompt_step():
         """
-        Return a ChatPromptTemplate (or any prompt). 
+        Return a ChatPromptTemplate (or any prompt).
         Prompt expects {"context", "question"} as input.
         """
         template = """
@@ -135,7 +136,7 @@ class RAGRetrievalBuilder:
         """
         return RunnableLambda(
             lambda inputs: {
-                "result": inputs,           
+                "result": inputs,
             },
             name="output_finaliser"
         )

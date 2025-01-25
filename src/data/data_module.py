@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from typing import Any
+
 import pandas as pd
 
-from utils.file_access import FileAccess
 from config.pipeline_context import PipelineContext
-from typing import List, Dict, Callable, Optional, Union, Any
-
 from config.states import DataState
+from utils.file_access import FileAccess
 
 
 class DataModule:
@@ -20,16 +20,17 @@ class DataModule:
         data_path (Path): Path to load data from a file.
         data_dict (Any): Data dictionary with transformations.
     """
+
     def __init__(
-        self, ctx: PipelineContext, 
+        self, ctx: PipelineContext,
         state_key: str = None,
         data_path: Path = None,
         data_dict: Any = None,
     ):
-        
+
         if not state_key and not data_path:
             raise ValueError("Either `state_key` or `data_path` must be provided.")
-        
+
         self.ctx = ctx
         self.state_key = state_key
         self.data_path = data_path
@@ -50,11 +51,11 @@ class DataModule:
             )
         data = self.apply_data_dict(data)
         return data
-    
+
     def load_data_from_path(self):
         """Load data to memory using your file access layer"""
         return FileAccess.load_file(self.data_path)
-    
+
     def load_data_from_state(self):
         return self.data_state.get(self.state_key)
 
@@ -81,7 +82,7 @@ def load_dataset(dm: DataModule) -> pd.DataFrame:
     if not hasattr(dm, "_loaded_data"):
         dm._loaded_data = dm.load()
         logging.debug(f"Loaded dataset from {dm.data_path}")
-        
+
         if dm._loaded_data is None:
             raise ValueError(f"Dataset at {dm.data_path} is empty.")
     return dm._loaded_data

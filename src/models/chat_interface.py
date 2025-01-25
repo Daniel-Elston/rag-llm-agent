@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from config.pipeline_context import PipelineContext
-from src.data.data_module import DataModule
-
-from config.states import DataState
-from config.settings import Params
-
 import gradio as gr
+
+from config.pipeline_context import PipelineContext
+from config.settings import Params
+from config.states import DataState
+from src.data.data_module import DataModule
 
 
 class RAGChatDashboard:
     """
-    Summary: 
-        Provides a Gradio-based user interface for multi-turn conversations using 
+    Summary:
+        Provides a Gradio-based user interface for multi-turn conversations using
         the RAG conversational pipeline. Integrates retrieval, augmentation, and generation
         for a seamless conversational experience.\n
     Input: Conversational chain ``data_state key: convo_chain``\n
@@ -23,6 +22,7 @@ class RAGChatDashboard:
         3) Generate LLM responses and update chat history\n
         4) Launch the Gradio chat interface for real-time user interaction
     """
+
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,
@@ -30,7 +30,6 @@ class RAGChatDashboard:
         self.dm = dm
         self.data_state: DataState = ctx.states.data
         self.params: Params = ctx.settings.params
-
 
     def __call__(self):
         """Build and launch the Gradio interface."""
@@ -62,14 +61,13 @@ class RAGChatDashboard:
                     chat_history.append([user_message, bot_msg])
                     chat_history.append({"role": "assistant", "content": bot_msg})
                     return chat_history, ""
-                
+
                 user_message = user_message[:self.params.max_input_seq_length]
 
                 chat_history.append({
                     "role": "user",
                     "content": user_message
                 })
-
 
                 # Query the chain
                 result = convo_chain({"question": user_message})

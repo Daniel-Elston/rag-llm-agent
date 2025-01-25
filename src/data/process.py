@@ -4,8 +4,8 @@ import re
 import unicodedata
 
 from config.pipeline_context import PipelineContext
-from src.data.data_module import DataModule
 from config.states import DataState
+from src.data.data_module import DataModule
 
 
 class ProcessDocuments:
@@ -16,6 +16,7 @@ class ProcessDocuments:
         - Remove excessive whitespace
         - Fix repeated punctuation (e.g. ". ." -> ".")
     """
+
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,

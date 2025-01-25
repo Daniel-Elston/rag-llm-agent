@@ -2,20 +2,20 @@ from __future__ import annotations
 
 import logging
 
-from config.pipeline_context import PipelineContext
-from utils.file_access import FileAccess
-from src.data.data_module import DataModule
-
 from config.paths import Paths
-from config.settings import Config, Params
+from config.pipeline_context import PipelineContext
+from config.settings import Config
+from config.settings import Params
 from config.states import DataState
+from src.data.data_module import DataModule
+from utils.file_access import FileAccess
 
 
 class RAGResponseGenerator:
     """
     Summary:
-        Executes queries on the RAG Pipeline and generates responses. 
-        Uses the retrieval and augmentation system built by the RAGBuilder 
+        Executes queries on the RAG Pipeline and generates responses.
+        Uses the retrieval and augmentation system built by the RAGBuilder
         to answer questions with source attribution.\n
     Input: RAG pipeline ``data_state key: rag_pipeline``\n
     Output: LLM generated response\n
@@ -25,6 +25,7 @@ class RAGResponseGenerator:
         3) Generate responses from the LLM\n
         4) Save and log the generated responses for downstream use
     """
+
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,
@@ -36,7 +37,6 @@ class RAGResponseGenerator:
         self.data_state: DataState = ctx.states.data
         self.paths: Paths = ctx.paths
 
-
     def __call__(self):
         rag_pipeline = self.dm.load()
         self._execute_test_query(rag_pipeline)
@@ -45,7 +45,7 @@ class RAGResponseGenerator:
         test_query = self._get_test_query()
         response = self._generate_response(rag_pipeline, test_query)
         self._save_helper(test_query, response)
-        
+
     def _get_test_query(self):
         """Retrieve a test query."""
         test_query_store = [
@@ -53,7 +53,7 @@ class RAGResponseGenerator:
             "Give a summary of challenges in quantum computing."
         ]
         return test_query_store[1]
-        
+
     def _generate_response(self, rag_pipeline, query: str):
         """Generate a response from the QA chain for given query."""
         response = rag_pipeline.invoke({"query": query})
@@ -61,7 +61,7 @@ class RAGResponseGenerator:
             "query": query,
             "answer": response["result"],
         }
-        
+
     def _log_generated_response(self, query, response):
         """Log the generated response to a file."""
         answer = response["answer"]
@@ -72,11 +72,11 @@ class RAGResponseGenerator:
             f"A: {answer}\n"
         )
         FileAccess.save_file(
-            log_entry, 
+            log_entry,
             self.paths.get_path("generated-answers")
         )
         logging.debug(log_entry)
-        
+
     def _save_helper(self, query, response):
         if self.config.write_output:
             self._log_generated_response(query, response)

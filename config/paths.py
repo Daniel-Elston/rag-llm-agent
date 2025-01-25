@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-import attr
 import logging
 from pathlib import Path
 from pprint import pformat
-from typing import Dict, Optional, Union
+from typing import Dict
+from typing import Optional
+from typing import Union
+
+import attr
 
 
 paths_store = {
@@ -15,7 +18,7 @@ paths_store = {
     "raw-t2": Path("data/raw/test-m2.pdf"),
     "raw-idx1": "2501.09079",
     "raw-idx2": "2501.08476",
-    
+
     # Outputs
     "raw-doc-metadata": Path("reports/outputs/raw-doc-metadata.txt"),
     "sample-chunks": Path("reports/outputs/sample-chunks.txt"),

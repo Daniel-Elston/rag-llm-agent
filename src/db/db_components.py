@@ -4,10 +4,13 @@ import logging
 import re
 from io import StringIO
 from pathlib import Path
+
 import pandas as pd
 import psycopg2.pool
 from sqlalchemy import create_engine
+
 from utils.file_access import FileAccess
+
 
 class DatabaseConnection:
     def __init__(self, admin_creds: dict, db_info: dict):
@@ -43,7 +46,6 @@ class DatabaseConnection:
 
     def log_database_info(self):
         """Log connection and database information."""
-        sep = "=" * 125
         conn = self.pool.getconn()
         table_store = []
         try:

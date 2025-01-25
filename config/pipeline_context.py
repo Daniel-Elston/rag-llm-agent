@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import attr
-from typing import Optional, Union
-from pathlib import Path
 
 from config.paths import Paths
 from config.settings import Settings

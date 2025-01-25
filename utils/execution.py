@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Callable
 
-from config.settings import Config
 from config.paths import Paths
-
 from config.pipeline_context import PipelineContext
+from config.settings import Config
 from utils.logging_utils import log_step
+
 
 class TaskExecutor:
     def __init__(self, ctx: PipelineContext):

@@ -1,20 +1,19 @@
 from __future__ import annotations
 
-from config.pipeline_context import PipelineContext
-from src.data.data_module import DataModule
-
-from config.settings import Config, Params
-from config.states import DataState
-
-from src.models.hf_llm import LLMGenerator
-
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
+
+from config.pipeline_context import PipelineContext
+from config.settings import Config
+from config.settings import Params
+from config.states import DataState
+from src.data.data_module import DataModule
+from src.models.hf_llm import LLMGenerator
 
 
 class RAGConversationalBuilder:
     """
-    Summary: 
+    Summary:
         Builds a conversational retrieval system with memory
         and augments retrieved documents into a conversational chain for later generation.
         Utilises FAISS for retrieval and a HuggingFace LLM for
@@ -27,6 +26,7 @@ class RAGConversationalBuilder:
         3) Build the conversational chain by integrating retrieval, memory, and augmentation\n
         4) Save the constructed conversational chain to state
     """
+
     def __init__(
         self, ctx: PipelineContext,
         dm: DataModule,
@@ -38,7 +38,6 @@ class RAGConversationalBuilder:
         self.params: Params = ctx.settings.params
         self.config: Config = ctx.settings.config
         self.data_state: DataState = ctx.states.data
-
 
     def __call__(self):
         self.initialise()
@@ -70,6 +69,6 @@ class RAGConversationalBuilder:
             return_source_documents=True
         )
         return convo_chain
-    
+
     def _save_helper(self, chain):
         self.data_state.set("convo_chain", chain)

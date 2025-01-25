@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import logging
 import logging.config
-from functools import partial
-from pathlib import Path
 import multiprocessing
+from pathlib import Path
 
 import colorlog
 
@@ -12,9 +10,13 @@ import colorlog
 # Custom log level
 FILE_TRACK = 15
 logging.addLevelName(FILE_TRACK, "FILE_TRACK")
+
+
 def file_track(self, message, *args, **kwargs):
     if self.isEnabledFor(FILE_TRACK):
         self._log(FILE_TRACK, message, args, **kwargs)
+
+
 logging.Logger.file_track = file_track
 
 
